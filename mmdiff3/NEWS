@@ -1,0 +1,18 @@
+CHANGES IN VERSION 1.0.0
+------------------------
+
+    o Initial Release: This package replaces the deprecated
+      MMDiff package. The core algorithms.
+
+    o Data structure: Initilized a MMDiff object
+      class.
+
+    o Performance: Optimized runtime by pre-computing
+      kernel matrix and other speedups after
+      function profiling.
+
+    o Normalization: Added motif suport and gene
+      annotations for visulizing peaks. Included
+      interactive shiny application that summarizes
+      results  and displays peak figures.
+
