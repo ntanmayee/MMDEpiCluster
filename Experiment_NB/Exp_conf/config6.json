@@ -1,0 +1,31 @@
+{
+    "cluster": {
+        "prob": 0.5
+    },
+    "background_prior_beta": {
+        "alpha": 1,
+        "beta": 1
+    },
+    "mixing_prior_beta": {
+        "alpha": 4,
+        "beta": 0.6
+    },
+    "config": {
+        "sampling_depth_foreground": 60,
+        "n_patterns": 4,
+        "locations_per_pattern": 100,
+        "random_seed": 525126986,
+        "sampling_depth_background": 30,
+        "name": "Experiment Six",
+        "n_modifications": 10,
+        "n_histones": 10
+    },
+    "foreground_prior_beta": {
+        "alpha": 0.3,
+        "beta": 0.3
+    },
+    "histone": {
+        "width": 300,
+        "sigma": 150
+    }
+}
