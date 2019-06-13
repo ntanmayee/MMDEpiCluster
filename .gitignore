@@ -33,9 +33,11 @@
 
 .idea/
 cmake-build-debug/
+Experiment_NB/Experiment_out
+Experiment_NB/Simulation_result
 .ipynb_checkpoints
 .DS_Store
-.Rproj.user
+. Rproj.user
 .RData
 .Rhistory
 src-build
