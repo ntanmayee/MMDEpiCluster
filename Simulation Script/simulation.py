@@ -34,8 +34,8 @@ def createConfoundingDrivers(confounding_vector, hist_num, mod_count, N, alpha, 
     
     confounding_distrib = tfd.Bernoulli(probs=confounding_vector) ###[mod_count]
     
-    nuc_draw = tf.reshape(nuc_distrib.sample(N), [N,1,hist_num]) ###[N x 1 x hist_num]
-    confounder_sample = tf.reshape(confounding_distrib.sample(N),[N, mod_count, 1]) ###[N x mod_count x 1]
+    nuc_draw = tf.expand_dims(nuc_distrib.sample(N), 1) ###[N x 1 x hist_num]
+    confounder_sample = tf.expand_dims(confounding_distrib.sample(N),2) ###[N x mod_count x 1]
     
     samples = tf.matmul(confounder_sample, nuc_draw) ###[N x mod_count x hist_num]
     
@@ -111,9 +111,7 @@ def run_simulation(
                     alpha_pattern,
                     beta_pattern,
                     alpha_bg, 
-                    beta_bg,
-                    alpha_mixing_noise,
-                    beta_mixing_noise, 
+                    beta_bg
                     ):
     
     if not name:
@@ -136,16 +134,13 @@ def run_simulation(
     hist_num = n_histones  #Number of nucleosomes 
     N_bg = coverage_per_histone_bg #Number of Draws
     N_cf = coverage_per_histone_fg #Number of Draws 
-    alpha = 0.3
-    beta = 0.3
-    alpha_beta = 1.
         
     for i in range(0, n_patterns):
         
         for j in range(0, len(cluster_patterns[i])):
             conf_clust = tf.constant(cluster_patterns[i][j],dtype=tf.float32)
-            conf_clust = conf_clust*tfd.Beta(5.,0.8).sample([mod_count])
-            clust, nc_dist, cd = create_cluster(conf_clust, mod_count, hist_num, N_cf, alpha, beta)
+            #conf_clust = conf_clust*tfd.Beta(alpha_mixing_noise,beta_mixing_noise).sample([mod_count])
+            clust, nc_dist, cd = create_cluster(conf_clust, mod_count, hist_num, N_cf, alpha_pattern, beta_pattern)
             with tf.name_scope('summaries'):
                 tf.summary.tensor_summary("Association "+str(i)+" Cluster "+str(j), cd.probs)
             if j > 0:
@@ -154,7 +149,7 @@ def run_simulation(
                 clusts = clust
                 
         draws_bg = createNucleosomeDraws(mod_count, hist_num, N_bg)
-        driver_bg, bg_distribs = createRandomDrivers(alpha_beta, alpha_beta, hist_num, mod_count, N_bg)
+        driver_bg, bg_distribs = createRandomDrivers(alpha_bg, beta_bg, hist_num, mod_count, N_bg)
         draws_bg = flatten_reshape(mod_count, hist_num, N_bg, draws_bg)
         driver_bg = flatten_reshape(mod_count, hist_num, N_bg, driver_bg)
         index_bg = create_mod_index(mod_count, hist_num, N_bg)
@@ -208,6 +203,12 @@ def main():
         print("Path doesn't exist")
         exit(1)
 
+        
+    tf.set_random_seed(conf['config']['random_seed'])
+    np.random.seed(conf['config']['random_seed'])
+    
+    print ("TensorFlow version: " + tf.__version__)
+
     patterns = []
         
     if os.path.exists(opts.pattern):
@@ -215,9 +216,6 @@ def main():
     else:
         for i in range(0,conf['config']['n_patterns']):
             patterns.append(generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob']))
-
-    print ("TensorFlow version: " + tf.__version__)
-    tf.set_random_seed(conf['config']['random_seed'])
     
     run_simulation(
                     conf['config']['name'],
@@ -233,9 +231,7 @@ def main():
                     conf['foreground_prior_beta']['alpha'],
                     conf['foreground_prior_beta']['beta'],
                     conf['background_prior_beta']['alpha'], 
-                    conf['background_prior_beta']['beta'],
-                    conf['mixing_prior_beta']['alpha'], 
-                    conf['mixing_prior_beta']['beta']
+                    conf['background_prior_beta']['beta']
                     )            
 
 if __name__ == '__main__':
