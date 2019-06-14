@@ -27,6 +27,18 @@ def createRandomDrivers(alpha, beta, hist_num, mod_count, N):
     nuc_distribs = tfd.Bernoulli(probs=nuc_probs)
     samples = nuc_distribs.sample(N)
     return (samples, nuc_distribs) ###[N x mod_count x hist_num]
+    
+def createConfoundingDrivers2(confounding_vector, hist_num, mod_count, N, alpha, beta):
+    nuc_probs = tfd.Beta(alpha,beta).sample([hist_num]) ###[hist_num]
+    confounder = tf.expand_dims(confounding_vector,1) ###[mod_count x 1]
+    nuc_probs = tf.expand_dims(nuc_probs,0) ###[1 x hist_num]
+    
+    nuc_probs_expanded = tf.matmul(confounder_sample, nuc_draw) ###[mod_count x histnum]
+    nuc_distrib = tfd.Bernoulli(probs=nuc_probs_expanded) ###[mod_count x histnum]
+    
+    nuc_draw = nuc_distrib.sample(N)
+        
+    return (nuc_draw, confounding_distrib, nuc_distrib)
 
 def createConfoundingDrivers(confounding_vector, hist_num, mod_count, N, alpha, beta):
     nuc_probs = tfd.Beta(alpha,beta).sample([hist_num]) ###[hist_num]
