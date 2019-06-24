@@ -18,6 +18,8 @@ for i in range(0,5):
     },
     'cluster':{
         'prob':0.4
+        'intensity_alpha':5,
+        'intensity_beta':1
     },
     'histone':{
         'width':300,
