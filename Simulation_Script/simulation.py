@@ -30,15 +30,21 @@ def createRandomDrivers(alpha, beta, hist_num, mod_count, N):
     
 def createConfoundingDrivers2(confounding_vector, hist_num, mod_count, N, alpha, beta):
     nuc_probs = tfd.Beta(alpha,beta).sample([hist_num]) ###[hist_num]
+    nuc_probs = tf.expand_dims(nuc_probs, 0) ###[1 x hist_num]
+    nuc_probs = tf.tile(nuc_probs, [mod_count, 1]) ###[mod_count x hist_num]
+    
     confounder = tf.expand_dims(confounding_vector,1) ###[mod_count x 1]
-    nuc_probs = tf.expand_dims(nuc_probs,0) ###[1 x hist_num]
+    confounder = tf.tile(confounding_vector, [1, hist_num]) ###[mod_count x hist_num]
     
-    nuc_probs_expanded = tf.matmul(confounder_sample, nuc_draw) ###[mod_count x histnum]
     nuc_distrib = tfd.Bernoulli(probs=nuc_probs_expanded) ###[mod_count x histnum]
+    conf_distrib = tfd.Bernoulli(probs=conf_distrib) ###[mod_count x histnum]
+
+    nuc_draw = nuc_distrib.sample(N) ###[N x mod_count x histnum]
+    conf_draw = conf_distrib.sample(N) ###[N x mod_count x histnum]
     
-    nuc_draw = nuc_distrib.sample(N)
+    draw = nuc_draw*conf_draw
         
-    return (nuc_draw, confounding_distrib, nuc_distrib)
+    return (draw, conf_distrib, nuc_distrib)
 
 def createConfoundingDrivers(confounding_vector, hist_num, mod_count, N, alpha, beta):
     nuc_probs = tfd.Beta(alpha,beta).sample([hist_num]) ###[hist_num]
@@ -112,6 +118,7 @@ def create_random_group(conf_vec, mod_count, hist_num, N, alpha, beta):
 def run_simulation( 
                     name,
                     cluster_patterns,
+                    modification_intensities,
                     n_patterns,
                     n_marks, 
                     n_histones, 
@@ -198,6 +205,10 @@ def generate_pattern(nmod, prob):
         clusters.append(clust_vec)
         size_sum = size_sum+clust_sz[0]
     return(clusters)
+    
+def generate_intensity(nmod, alpha, beta):
+    intensity = np.random.beta(alpha, beta, nmod)
+    return(intensity)
 
 def main():    
     class C:
@@ -222,12 +233,14 @@ def main():
     print ("TensorFlow version: " + tf.__version__)
 
     patterns = []
+    intensity_vectors = []
         
     if os.path.exists(opts.pattern):
         patterns = json.load(open(opts.pattern,"r"))
     else:
         for i in range(0,conf['config']['n_patterns']):
             patterns.append(generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob']))
+            intensity_vectors.append(generate_intensity(conf['config']['n_modifications'], conf['cluster']['intensity_alpha'], conf['cluster']['intensity_beta']))
     
     run_simulation(
                     conf['config']['name'],
