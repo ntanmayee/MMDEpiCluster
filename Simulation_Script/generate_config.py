@@ -18,8 +18,8 @@ for i in range(0,5):
     },
     'cluster':{
         'prob':0.4
-        'intensity_alpha':5,
-        'intensity_beta':1
+        'intensity_alpha':5.0,
+        'intensity_beta':1.0
     },
     'histone':{
         'width':300,
@@ -30,8 +30,8 @@ for i in range(0,5):
         'beta': 0.5
     },
     'background_prior_beta':{
-        'alpha': 1,
-        'beta': 1
+        'alpha': 1.0,
+        'beta': 1.0
     }}
     jstr = json.dumps(data, indent=4)
     with open("configHiDense"+str(i)+".json", "w") as text_file:

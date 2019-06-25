@@ -31,13 +31,13 @@ def createRandomDrivers(alpha, beta, hist_num, mod_count, N):
 def createConfoundingDrivers2(confounding_vector, hist_num, mod_count, N, alpha, beta):
     nuc_probs = tfd.Beta(alpha,beta).sample([hist_num]) ###[hist_num]
     nuc_probs = tf.expand_dims(nuc_probs, 0) ###[1 x hist_num]
-    nuc_probs = tf.tile(nuc_probs, [mod_count, 1]) ###[mod_count x hist_num]
+    nuc_probs = tf.tile(nuc_probs, multiples=[mod_count, 1]) ###[mod_count x hist_num]
     
     confounder = tf.expand_dims(confounding_vector,1) ###[mod_count x 1]
-    confounder = tf.tile(confounding_vector, [1, hist_num]) ###[mod_count x hist_num]
+    confounder = tf.tile(confounder, multiples=[1, hist_num]) ###[mod_count x hist_num]
     
-    nuc_distrib = tfd.Bernoulli(probs=nuc_probs_expanded) ###[mod_count x histnum]
-    conf_distrib = tfd.Bernoulli(probs=conf_distrib) ###[mod_count x histnum]
+    nuc_distrib = tfd.Bernoulli(probs=nuc_probs) ###[mod_count x histnum]
+    conf_distrib = tfd.Bernoulli(probs=confounder) ###[mod_count x histnum]
 
     nuc_draw = nuc_distrib.sample(N) ###[N x mod_count x histnum]
     conf_draw = conf_distrib.sample(N) ###[N x mod_count x histnum]
@@ -93,7 +93,7 @@ def draw_sample(tens, index, mask, intensity_mask=1):
     
 def create_cluster(conf_vec, mod_count, hist_num, N, alpha, beta):
     draws_fg = createNucleosomeDraws(mod_count, hist_num, N)
-    driver, conf_dist, nuc_dist = createConfoundingDrivers(conf_vec, hist_num, mod_count, N, alpha, beta)
+    driver, conf_dist, nuc_dist = createConfoundingDrivers2(conf_vec, hist_num, mod_count, N, alpha, beta)
 
     draws = flatten_reshape(mod_count, hist_num, N, draws_fg)
     driver = flatten_reshape(mod_count, hist_num, N, driver)
@@ -142,6 +142,10 @@ def run_simulation(
         with open(name+"/patterns"+".json", "w") as text_file:
             jstr = json.dumps(cluster_patterns, indent=4, cls=NumpyEncoder)
             print(jstr, file=text_file)
+
+        with open(name+"/intensity"+".json", "w") as text_file:
+            jstr = json.dumps(modification_intensities, indent=4, cls=NumpyEncoder)
+            print(jstr, file=text_file)
         
     else:
         print("Error: directory already exits: "+name)
@@ -158,7 +162,8 @@ def run_simulation(
         
         for j in range(0, len(cluster_patterns[i])):
             conf_clust = tf.constant(cluster_patterns[i][j],dtype=tf.float32)
-            #conf_clust = conf_clust*tfd.Beta(alpha_mixing_noise,beta_mixing_noise).sample([mod_count])
+            intensity = tf.constant(modification_intensities[i],dtype=tf.float32)
+            conf_clust = conf_clust*intensity
             clust, nc_dist, cd = create_cluster(conf_clust, mod_count, hist_num, N_cf, alpha_pattern, beta_pattern)
             with tf.name_scope('summaries'):
                 tf.summary.tensor_summary("Association "+str(i)+" Cluster "+str(j), cd.probs)
@@ -217,7 +222,8 @@ def main():
     opts = C();
     parser = argparse.ArgumentParser(description='Generates simulation data')
     parser.add_argument('config', type=str, help="Path to config file")
-    parser.add_argument('--pattern', nargs=1, help="Directory containing cofounding pattern matrices", default='')
+    parser.add_argument('--pattern', nargs=1, help="Path to pattern file", default='')
+    parser.add_argument('--intensity', nargs=1, help="Path to intensity file", default='')
     parser.parse_args(args=sys.argv[1:], namespace=opts)
     
     if os.path.exists(opts.config):
@@ -236,15 +242,21 @@ def main():
     intensity_vectors = []
         
     if os.path.exists(opts.pattern):
-        patterns = json.load(open(opts.pattern,"r"))
+        patterns = np.asarray(json.load(open(opts.pattern,"r")))
     else:
         for i in range(0,conf['config']['n_patterns']):
             patterns.append(generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob']))
+
+    if os.path.exists(opts.intensity):
+        intensity_vectors = np.asarray(json.load(open(opts.intensity,"r")))
+    else:
+        for i in range(0,conf['config']['n_patterns']):
             intensity_vectors.append(generate_intensity(conf['config']['n_modifications'], conf['cluster']['intensity_alpha'], conf['cluster']['intensity_beta']))
     
     run_simulation(
                     conf['config']['name'],
                     patterns,
+                    intensity_vectors,
                     conf['config']['n_patterns'],
                     conf['config']['n_modifications'], 
                     conf['config']['n_histones'], 
