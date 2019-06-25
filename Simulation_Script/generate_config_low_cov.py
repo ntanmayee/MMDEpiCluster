@@ -17,7 +17,7 @@ for i in range(0,5):
         'sampling_depth_background':40
     },
     'cluster':{
-        'prob':0.4
+        'prob':0.4,
         'intensity_alpha':0.8,
         'intensity_beta':0.4
     },
