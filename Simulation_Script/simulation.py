@@ -222,8 +222,8 @@ def main():
     opts = C();
     parser = argparse.ArgumentParser(description='Generates simulation data')
     parser.add_argument('config', type=str, help="Path to config file")
-    parser.add_argument('--pattern', nargs=1, help="Path to pattern file", default='')
-    parser.add_argument('--intensity', nargs=1, help="Path to intensity file", default='')
+    parser.add_argument('--pattern', type=str, help="Path to pattern file", default='')
+    parser.add_argument('--intensity', type=str, help="Path to intensity file", default='')
     parser.parse_args(args=sys.argv[1:], namespace=opts)
     
     if os.path.exists(opts.config):
