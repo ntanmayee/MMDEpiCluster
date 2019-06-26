@@ -45,21 +45,7 @@ def createConfoundingDrivers2(confounding_vector, hist_num, mod_count, N, alpha,
     draw = nuc_draw*conf_draw
         
     return (draw, conf_distrib, nuc_distrib)
-
-def createConfoundingDrivers(confounding_vector, hist_num, mod_count, N, alpha, beta):
-    nuc_probs = tfd.Beta(alpha,beta).sample([hist_num]) ###[hist_num]
-    nuc_distrib = tfd.Bernoulli(probs=nuc_probs) ###[hist_num]
     
-    confounding_distrib = tfd.Bernoulli(probs=confounding_vector) ###[mod_count]
-    
-    nuc_draw = tf.expand_dims(nuc_distrib.sample(N), 1) ###[N x 1 x hist_num]
-    confounder_sample = tf.expand_dims(confounding_distrib.sample(N),2) ###[N x mod_count x 1]
-    
-    samples = tf.matmul(confounder_sample, nuc_draw) ###[N x mod_count x hist_num]
-    
-    return (samples, confounding_distrib, nuc_distrib)
-    
-
 def createRandomGroupDrivers(confounding_vector, hist_num, mod_count, N, alpha, beta):
     nuc_probs = tfd.Beta(alpha,beta).sample([mod_count, hist_num])
     nuc_distrib = tfd.Bernoulli(probs=nuc_probs) ###[hist_num]
@@ -217,10 +203,6 @@ def generate_pattern(nmod, prob, alpha, beta):
         clusters.append(clust_vec)
         size_sum = size_sum+clust_sz[0]
     return(clusters, intensities)
-    
-def generate_intensity(nmod, alpha, beta):
-    intensity = np.random.beta(alpha, beta, nmod)
-    return(intensity)
 
 def main():    
     class C:
