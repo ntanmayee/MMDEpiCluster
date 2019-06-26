@@ -224,6 +224,12 @@ def main():
         
     tf.set_random_seed(conf['config']['random_seed'])
     np.random.seed(conf['config']['random_seed'])
+    group_dir = conf['config']['group']
+
+    if not os.path.exists(group_dir+"/"):
+        os.makedirs(group_dir+"/")
+
+    name = group_dir +"/"+ conf['config']['name']
     
     print ("TensorFlow version: " + tf.__version__)
 
@@ -242,7 +248,7 @@ def main():
             intensity_vectors.append(intensity_vec)
 
     run_simulation(
-                    conf['config']['name'],
+                    name,
                     patterns,
                     intensity_vectors,
                     conf['config']['n_patterns'],

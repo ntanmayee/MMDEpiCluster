@@ -7,14 +7,15 @@ random.seed(1234567890)
 for i in range(0,5):
     
     data = {'config':{
-        'name':'Experiment_Med_Cov_'+str(i),
+        'name':'Experiment_High_Cov_'+str(i),
+        'group':'high',
         'random_seed':random.randint(1, 1234567890),
         'n_patterns':4,
         'n_histones':10,
         'n_modifications':10,
         'locations_per_pattern':300,
-        'sampling_depth_foreground':330,
-        'sampling_depth_background':120
+        'sampling_depth_foreground':360,
+        'sampling_depth_background':90
     },
     'cluster':{
         'prob':0.4,
@@ -23,7 +24,7 @@ for i in range(0,5):
     },
     'histone':{
         'width':300,
-        'sigma':100
+        'sigma':80
     },
     'foreground_prior_beta':{
         'alpha': 0.3,

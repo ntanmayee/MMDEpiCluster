@@ -2,20 +2,20 @@ import json
 import os
 import random
 
-random.seed(1234567890)
+random.seed(12345)
 
-for i in range(0,5):
+for i in range(0,2):
     
     data = {'config':{
-        'name':'Experiment_Low_Cov_'+str(i),
-        'group':'low',
+        'name':'Experiment_test1_'+str(i),
+        'group':'test1',
         'random_seed':random.randint(1, 1234567890),
         'n_patterns':4,
         'n_histones':10,
         'n_modifications':10,
-        'locations_per_pattern':300,
-        'sampling_depth_foreground':120,
-        'sampling_depth_background':30
+        'locations_per_pattern':50,
+        'sampling_depth_foreground':110,
+        'sampling_depth_background':40
     },
     'cluster':{
         'prob':0.4,
@@ -24,7 +24,7 @@ for i in range(0,5):
     },
     'histone':{
         'width':300,
-        'sigma':80
+        'sigma':100
     },
     'foreground_prior_beta':{
         'alpha': 0.3,
