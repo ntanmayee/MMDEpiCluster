@@ -14,7 +14,10 @@
 - Check out the MMDiff3 package from github *[NEEDS LINK]*.
 - Start R.
 - From R, load the package `devtools` by running `library("devtools")`.
-- Install MMDiff by running `install("/Path/To/MMDiff/)`.
+- Install MMDiff by running `install("/Path/To/MMDiff/")`.
+### Generate Configuration Files
+- Navigate to `Experiment_NB/Exp_conf`
+- Run all configuration generation scripts located in `Simulation_Script/Configs` from within `Experiment_NB/Exp_conf`
 ### Data Generation.
 - Switch directories to `Experiment_NB`.
 - From within `Experiment_NB`, start up Jupyter by running `jupyter notebook`.
