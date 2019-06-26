@@ -4,7 +4,7 @@ import random
 
 random.seed(1234567890)
 
-for i in range(0,5):
+for i in range(0,6):
     
     data = {'config':{
         'name':'Experiment_Med_Cov_'+str(i),
