@@ -34,6 +34,7 @@
 .idea/
 cmake-build-debug/
 Experiment_NB/Exp_conf_test/*
+Experiment_NB/Exp_conf/*
 Experiment_NB/Experiment_out
 Experiment_NB/Simulation_result
 .ipynb_checkpoints
