@@ -14,8 +14,8 @@ for i in range(0,2):
         'n_histones':10,
         'n_modifications':10,
         'locations_per_pattern':50,
-        'sampling_depth_foreground':110,
-        'sampling_depth_background':40
+        'sampling_depth_foreground':240,
+        'sampling_depth_background':60
     },
     'cluster':{
         'prob':0.4,
