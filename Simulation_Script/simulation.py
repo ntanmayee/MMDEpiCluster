@@ -199,17 +199,24 @@ def run_simulation(
         
             df.to_csv(directory+"/data.csv")
             
-def generate_pattern(nmod, prob):
+def generate_pattern(nmod, prob, alpha, beta):
     perm = np.random.permutation(nmod)
     size_sum = 0
     clusters = []
+    intensities = np.zeros((nmod,))
     while size_sum < nmod:
         clust_sz = np.random.binomial(nmod-size_sum-1, prob, 1) + 1
         clust_vec = np.pad(np.ones(clust_sz), (size_sum, nmod-size_sum-clust_sz), 'constant', constant_values=(0,0))
         clust_vec = clust_vec[perm]
+        
+        intensity = np.random.beta(alpha, beta, 1)
+        intensity_vec = clust_vec*intensity
+        
+        intensities = intensities+intensity_vec
+        
         clusters.append(clust_vec)
         size_sum = size_sum+clust_sz[0]
-    return(clusters)
+    return(clusters, intensities)
     
 def generate_intensity(nmod, alpha, beta):
     intensity = np.random.beta(alpha, beta, nmod)
@@ -241,18 +248,17 @@ def main():
     patterns = []
     intensity_vectors = []
         
-    if os.path.exists(opts.pattern):
+    if os.path.exists(opts.pattern) and os.path.exists(opts.intensity):
         patterns = np.asarray(json.load(open(opts.pattern,"r")))
-    else:
-        for i in range(0,conf['config']['n_patterns']):
-            patterns.append(generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob']))
-
-    if os.path.exists(opts.intensity):
         intensity_vectors = np.asarray(json.load(open(opts.intensity,"r")))
+
     else:
         for i in range(0,conf['config']['n_patterns']):
-            intensity_vectors.append(generate_intensity(conf['config']['n_modifications'], conf['cluster']['intensity_alpha'], conf['cluster']['intensity_beta']))
-    
+            pattern, intensity_vec = generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob'], conf['cluster']['intensity_alpha'], conf['cluster']['intensity_beta'])
+
+            patterns.append(pattern)
+            intensity_vectors.append(intensity_vec)
+
     run_simulation(
                     conf['config']['name'],
                     patterns,

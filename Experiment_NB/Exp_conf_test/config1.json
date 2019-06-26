@@ -2,28 +2,28 @@
     "cluster": {
         "prob": 0.4,
         "intensity_alpha": 0.8,
-        "intensity_beta": 0.5
+        "intensity_beta": 0.2
     },
     "background_prior_beta": {
         "alpha": 1.0,
         "beta": 1.0
     },
     "config": {
-        "sampling_depth_foreground": 240,
+        "sampling_depth_foreground": 260,
         "n_patterns": 4,
         "locations_per_pattern": 100,
         "random_seed": 237777322,
-        "sampling_depth_background": 60,
+        "sampling_depth_background": 40,
         "name": "Experiment One",
         "n_modifications": 10,
         "n_histones": 10
     },
     "foreground_prior_beta": {
-        "alpha": 0.2,
-        "beta": 0.1
+        "alpha": 0.3,
+        "beta": 0.2
     },
     "histone": {
         "width": 300,
-        "sigma": 100
+        "sigma": 80
     }
 }
