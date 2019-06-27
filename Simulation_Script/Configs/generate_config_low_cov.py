@@ -24,7 +24,7 @@ for i in range(0,6):
     },
     'histone':{
         'width':300,
-        'sigma':80
+        'sigma':100
     },
     'foreground_prior_beta':{
         'alpha': 0.3,
