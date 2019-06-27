@@ -14,10 +14,10 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
 
-def createNucleosomeDraws(mod_count, hist_num, N):
-    nucleosome_width = 300
+def createNucleosomeDraws(mod_count, hist_num, N, width, sigma):
+    nucleosome_width = width
     mus = tf.reshape(tf.tile(tf.linspace(nucleosome_width/2, (hist_num-1)*nucleosome_width+nucleosome_width/2, hist_num), [mod_count]), [mod_count, hist_num])
-    rvs = tf.truncated_normal([N, mod_count, hist_num], mean=0.0, stddev=150.0, dtype=tf.float32)  
+    rvs = tf.truncated_normal([N, mod_count, hist_num], mean=0.0, stddev=sigma, dtype=tf.float32)
     location_draws = tf.add(rvs, mus)
     location_draws = location_draws - tf.reduce_min(location_draws)
     return (location_draws) ###[N x mod_count x hist_num]
@@ -77,8 +77,8 @@ def draw_sample(tens, index, mask, intensity_mask=1):
 
     return (tf.stack([tf.cast(tens_masked,dtype=tf.int32),index_masked]))
     
-def create_cluster(conf_vec, mod_count, hist_num, N, alpha, beta):
-    draws_fg = createNucleosomeDraws(mod_count, hist_num, N)
+def create_cluster(conf_vec, mod_count, hist_num, N, alpha, beta, width, sigma):
+    draws_fg = createNucleosomeDraws(mod_count, hist_num, N, width, sigma)
     driver, conf_dist, nuc_dist = createConfoundingDrivers2(conf_vec, hist_num, mod_count, N, alpha, beta)
 
     draws = flatten_reshape(mod_count, hist_num, N, draws_fg)
@@ -112,7 +112,7 @@ def run_simulation(
                     coverage_per_histone_bg, 
                     coverage_per_histone_fg, 
                     nuc_width, 
-                    sigma_nuc,
+                    nuc_sigma,
                     alpha_pattern,
                     beta_pattern,
                     alpha_bg, 
@@ -150,7 +150,7 @@ def run_simulation(
             conf_clust = tf.constant(cluster_patterns[i][j],dtype=tf.float32)
             intensity = tf.constant(modification_intensities[i],dtype=tf.float32)
             conf_clust = conf_clust*intensity
-            clust, nc_dist, cd = create_cluster(conf_clust, mod_count, hist_num, N_cf, alpha_pattern, beta_pattern)
+            clust, nc_dist, cd = create_cluster(conf_clust, mod_count, hist_num, N_cf, alpha_pattern, beta_pattern, nuc_width, nuc_sigma)
             with tf.name_scope('summaries'):
                 tf.summary.tensor_summary("Association "+str(i)+" Cluster "+str(j), cd.probs)
             if j > 0:
@@ -158,7 +158,7 @@ def run_simulation(
             else:
                 clusts = clust
                 
-        draws_bg = createNucleosomeDraws(mod_count, hist_num, N_bg)
+        draws_bg = createNucleosomeDraws(mod_count, hist_num, N_bg, nuc_width, nuc_sigma)
         driver_bg, bg_distribs = createRandomDrivers(alpha_bg, beta_bg, hist_num, mod_count, N_bg)
         draws_bg = flatten_reshape(mod_count, hist_num, N_bg, draws_bg)
         driver_bg = flatten_reshape(mod_count, hist_num, N_bg, driver_bg)

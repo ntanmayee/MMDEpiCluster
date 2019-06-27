@@ -20,15 +20,15 @@ for i in range(0,2):
     'cluster':{
         'prob':0.4,
         'intensity_alpha':0.8,
-        'intensity_beta':0.4
+        'intensity_beta':0.2
     },
     'histone':{
         'width':300,
         'sigma':100
     },
     'foreground_prior_beta':{
-        'alpha': 0.3,
-        'beta': 0.2
+        'alpha': 0.1,
+        'beta': 0.1
     },
     'background_prior_beta':{
         'alpha': 1.0,
