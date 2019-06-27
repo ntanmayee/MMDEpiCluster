@@ -21,7 +21,12 @@
 ### Data Generation.
 - Switch directories to `Experiment_NB`.
 - From within `Experiment_NB`, start up Jupyter by running `jupyter notebook`.
-- In Jupyter, open the notebook *Validation Experiment* and execute all paragraphs..
+- In Jupyter, open the notebook *Validation Experiment* and execute all paragraphs.
+### Data Analysis
+- In Jupyter, open the `Data Analysis` notebook
+- In paragraph 3, set `sim_wd` variable to point to the simulation directory
+- In paragraph 3, set `exp_wd` variable to point to the experiment directory to be analysed
+- Execute all paragraphs
 
 
 
