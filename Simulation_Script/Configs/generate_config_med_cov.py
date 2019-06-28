@@ -14,8 +14,8 @@ for i in range(0,6):
         'n_histones':10,
         'n_modifications':10,
         'locations_per_pattern':300,
-        'sampling_depth_foreground':240,
-        'sampling_depth_background':60
+        'sampling_depth_foreground':160,
+        'sampling_depth_background':40
     },
     'cluster':{
         'prob':0.4,
@@ -23,8 +23,8 @@ for i in range(0,6):
         'intensity_beta':0.4
     },
     'histone':{
-        'width':300,
-        'sigma':100
+        'width':200,
+        'sigma':75
     },
     'foreground_prior_beta':{
         'alpha': 0.3,
