@@ -144,7 +144,6 @@ dependencies:
   - make=4.2.1=h3efe00b_1
   - markdown=2.6.11=py35_0
   - markupsafe=1.0=py35h1de35cc_1
-  - matplotlib=2.2.3=py35h0e0179f_0
   - mistune=0.8.3=py35h1de35cc_1
   - mkl=2018.0.3=1
   - mkl_fft=1.0.6=py35hb8a8100_0
