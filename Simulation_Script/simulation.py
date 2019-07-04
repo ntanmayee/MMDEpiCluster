@@ -116,8 +116,9 @@ def run_simulation(
                     alpha_pattern,
                     beta_pattern,
                     alpha_bg, 
-                    beta_bg
-                    ):
+                    beta_bg,
+                    inter_op,
+                    intra_op):
     
     if not name:
         print("Error: empty name not allowed ")
@@ -136,9 +137,13 @@ def run_simulation(
     else:
         print("Error: directory already exits: "+name)
         return
-        
-    session = tf.InteractiveSession()
     
+    config = tf.ConfigProto(intra_op_parallelism_threads=intra_op,
+                            inter_op_parallelism_threads=inter_op,
+                            allow_soft_placement=True)
+
+    session = tf.Session(config=config)
+
     mod_count = n_marks #Number of hist mods
     hist_num = n_histones  #Number of nucleosomes 
     N_bg = coverage_per_histone_bg #Number of Draws
@@ -213,6 +218,8 @@ def main():
     parser.add_argument('config', type=str, help="Path to config file")
     parser.add_argument('--pattern', type=str, help="Path to pattern file", default='')
     parser.add_argument('--intensity', type=str, help="Path to intensity file", default='')
+    parser.add_argument('--inter_op_parallelism', type=int, help="inter_op_parallelism for tensorflow", default=0)
+    parser.add_argument('--intra_op_parallelism', type=int, help="intra_op_parallelism for tensorflow", default=0)
     parser.parse_args(args=sys.argv[1:], namespace=opts)
     
     if os.path.exists(opts.config):
@@ -262,8 +269,9 @@ def main():
                     conf['foreground_prior_beta']['alpha'],
                     conf['foreground_prior_beta']['beta'],
                     conf['background_prior_beta']['alpha'], 
-                    conf['background_prior_beta']['beta']
-                    )            
+                    conf['background_prior_beta']['beta'],
+                    opts.inter_op_parallelism,
+                    opts.intra_op_parallelism)
 
 if __name__ == '__main__':
     main()
