@@ -61,6 +61,8 @@ dependencies:
   - numpy
   - pandas
   - qt
+  - r-zeallot
+  - r-vctrs
   - r-colorspace
   - r-cowplot
   - r-devtools
