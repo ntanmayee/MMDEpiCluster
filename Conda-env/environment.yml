@@ -55,7 +55,7 @@ dependencies:
   - ipython_genutils=0.2.0
   - ipywidgets=7.4.1
   - jupyter=1.0.0
-  - llvm=4.0.1
+  - llvm
   - llvmdev=8.0.0
   - numpy=1.15.2
   - pandas=0.23.4
