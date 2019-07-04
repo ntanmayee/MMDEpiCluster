@@ -1,6 +1,5 @@
 name: experiment_env
 channels:
-  - conda-forge/label/gcc7
   - bioconda
   - anaconda
   - r
