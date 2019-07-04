@@ -4,6 +4,7 @@ channels:
   - anaconda
   - r
   - conda-forge
+  - conda-forge/label/gcc7
   - defaults
 dependencies:
   - python=3.5.6
