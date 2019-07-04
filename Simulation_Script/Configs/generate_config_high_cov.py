@@ -20,7 +20,7 @@ for i in range(0,6):
     'cluster':{
         'prob':0.4,
         'intensity_alpha':0.8,
-        'intensity_beta':0.4
+        'intensity_beta':0.2
     },
     'histone':{
         'width':200,
