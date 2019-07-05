@@ -1,10 +1,10 @@
 name: experiment_env
 channels:
   - bioconda
-  - anaconda
   - r
-  - conda-forge
   - conda-forge/label/gcc7
+  - conda-forge
+  - anaconda
   - defaults
 dependencies:
   - python=3.5.6
