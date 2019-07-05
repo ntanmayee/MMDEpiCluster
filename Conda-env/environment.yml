@@ -2,7 +2,6 @@ name: experiment_env
 channels:
   - bioconda
   - r
-  - conda-forge/label/gcc7
   - conda-forge
   - anaconda
   - defaults
@@ -101,5 +100,5 @@ dependencies:
   - rpy2
   - scipy
   - tensorboard
-  - tensorflow
+  - tensorflow=1.9
   - wget
