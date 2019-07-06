@@ -35,7 +35,7 @@ for i in range(0,6):
         'beta': 1.0
     }}
     jstr = json.dumps(data, indent=4)
-    with open(data['config']['name']+"conf"+".json", "w") as text_file:
+    with open(data['config']['name']+"_"+data['config']['group']+"_"+"conf"+".json", "w") as text_file:
         print(jstr, file=text_file)
 
 
