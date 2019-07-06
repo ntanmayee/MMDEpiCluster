@@ -96,6 +96,8 @@ dependencies:
   - r-stringr
   - r-tibble
   - r-tidyr
+  - r-ellipsis 
+  - r-vctrs 
   - rpy2
   - scipy
   - tensorboard
