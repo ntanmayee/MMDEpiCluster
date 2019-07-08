@@ -15,11 +15,12 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 def createNucleosomeDraws(mod_count, hist_num, N, width, sigma):
+    offset = (width/2)-(2*sigma)
     nucleosome_width = width
     mus = tf.reshape(tf.tile(tf.linspace(nucleosome_width/2, (hist_num-1)*nucleosome_width+nucleosome_width/2, hist_num), [mod_count]), [mod_count, hist_num])
     rvs = tf.truncated_normal([N, mod_count, hist_num], mean=0.0, stddev=sigma, dtype=tf.float32)
     location_draws = tf.add(rvs, mus)
-    location_draws = location_draws - tf.reduce_min(location_draws)
+    location_draws = location_draws - offset
     return (location_draws) ###[N x mod_count x hist_num]
 
 def createRandomDrivers(alpha, beta, hist_num, mod_count, N): 
