@@ -105,7 +105,8 @@ def create_random_group(conf_vec, mod_count, hist_num, N, alpha, beta):
 def run_simulation( 
                     name,
                     cluster_patterns,
-                    modification_intensities,
+                    int_alpha,
+                    int_beta,
                     n_patterns,
                     n_marks, 
                     n_histones, 
@@ -143,14 +144,13 @@ def run_simulation(
     mod_count = n_marks #Number of hist mods
     hist_num = n_histones  #Number of nucleosomes 
     N_bg = coverage_per_histone_bg #Number of Draws
-    N_cf = coverage_per_histone_fg #Number of Draws 
-        
+    N_cf = coverage_per_histone_fg #Number of Draws
+
     for i in range(0, n_patterns):
         
         for j in range(0, len(cluster_patterns[i])):
             conf_clust = tf.constant(cluster_patterns[i][j],dtype=tf.float32)
-            intensity = tf.constant(modification_intensities[i],dtype=tf.float32)
-            conf_clust = conf_clust*intensity
+            conf_clust = conf_clust*tfd.Beta(int_alpha, int_beta).sample([1])
             clust, nc_dist, cd = create_cluster(conf_clust, mod_count, hist_num, N_cf, alpha_pattern, beta_pattern, nuc_width, nuc_sigma)
             with tf.name_scope('summaries'):
                 tf.summary.tensor_summary("Association "+str(i)+" Cluster "+str(j), cd.probs)
@@ -186,24 +186,18 @@ def run_simulation(
         
             df.to_csv(directory+"/data.csv")
             
-def generate_pattern(nmod, prob, alpha, beta):
+def generate_pattern(nmod, prob):
     perm = np.random.permutation(nmod)
     size_sum = 0
     clusters = []
-    intensities = np.zeros((nmod,))
     while size_sum < nmod:
         clust_sz = np.random.binomial(nmod-size_sum-1, prob, 1) + 1
         clust_vec = np.pad(np.ones(clust_sz), (size_sum, nmod-size_sum-clust_sz), 'constant', constant_values=(0,0))
         clust_vec = clust_vec[perm]
         
-        intensity = np.random.beta(alpha, beta, 1)
-        intensity_vec = clust_vec*intensity
-        
-        intensities = intensities+intensity_vec
-        
         clusters.append(clust_vec)
         size_sum = size_sum+clust_sz[0]
-    return(clusters, intensities)
+    return(clusters)
 
 def main():    
     class C:
@@ -235,23 +229,19 @@ def main():
     print ("TensorFlow version: " + tf.__version__)
 
     patterns = []
-    intensity_vectors = []
         
     if os.path.exists(opts.pattern) and os.path.exists(opts.intensity):
         patterns = np.asarray(json.load(open(opts.pattern,"r")))
-        intensity_vectors = np.asarray(json.load(open(opts.intensity,"r")))
-
     else:
         for i in range(0,conf['config']['n_patterns']):
-            pattern, intensity_vec = generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob'], conf['cluster']['intensity_alpha'], conf['cluster']['intensity_beta'])
-
+            pattern, intensity_vec = generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob'])
             patterns.append(pattern)
-            intensity_vectors.append(intensity_vec)
 
     run_simulation(
                     name,
                     patterns,
-                    intensity_vectors,
+                    conf['cluster']['intensity_alpha'],
+                    conf['cluster']['intensity_beta'],
                     conf['config']['n_patterns'],
                     conf['config']['n_modifications'], 
                     conf['config']['n_histones'], 
