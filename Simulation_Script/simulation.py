@@ -131,9 +131,9 @@ def run_simulation(
             jstr = json.dumps(cluster_patterns, indent=4, cls=NumpyEncoder)
             print(jstr, file=text_file)
 
-        with open(name+"/intensity"+".json", "w") as text_file:
-            jstr = json.dumps(modification_intensities, indent=4, cls=NumpyEncoder)
-            print(jstr, file=text_file)
+            #with open(name+"/intensity"+".json", "w") as text_file:
+            #jstr = json.dumps(modification_intensities, indent=4, cls=NumpyEncoder)
+            #print(jstr, file=text_file)
         
     else:
         print("Error: directory already exits: "+name)
