@@ -234,7 +234,7 @@ def main():
         patterns = np.asarray(json.load(open(opts.pattern,"r")))
     else:
         for i in range(0,conf['config']['n_patterns']):
-            pattern, intensity_vec = generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob'])
+            pattern = generate_pattern(conf['config']['n_modifications'], conf['cluster']['prob'])
             patterns.append(pattern)
 
     run_simulation(
