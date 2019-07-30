@@ -11,7 +11,7 @@ for i in range(0,6):
         'group':'dense_low',
         'random_seed':random.randint(1, 1234567890),
         'n_patterns':8,
-        'n_histones':10,
+        'n_histones':20,
         'n_modifications':10,
         'locations_per_pattern':300,
         'sampling_depth_foreground':80,
@@ -27,8 +27,8 @@ for i in range(0,6):
         'sigma':75
     },
     'foreground_prior_beta':{
-        'alpha': 0.3,
-        'beta': 0.2
+        'alpha': 0.7,
+        'beta': 0.9
     },
     'background_prior_beta':{
         'alpha': 1.0,
