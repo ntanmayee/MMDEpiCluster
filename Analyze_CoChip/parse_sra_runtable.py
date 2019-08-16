@@ -28,15 +28,23 @@ def main():
             dirname = abl[0]+"_"+abl[1]
             
             if not dirname in abdict:
-                abdict[dirname] = []
+                abdict[dirname] = dict()
             
-            abdict[dirname].append(row["Run"])
+            if not row["Experiment"] in abdict[dirname]:
+                abdict[dirname][row["Experiment"]] = []
+            
+            abdict[dirname][row["Experiment"]].append(row["Run"])
     
-    for abl, srr in abdict.items():
+    for abl, exps in abdict.items():
         if not os.path.exists(abl+"/"):
             os.makedirs(abl)
-        with open(abl+"/SRR_Acc_List.txt", mode='wt', encoding='utf-8') as myfile:
-            myfile.write('\n'.join(srr))            
+        
+        for srx, srrs in exps.items():
+            if not os.path.exists(abl+"/"+srx):
+                os.makedirs(abl+"/"+srx)
+            
+            with open(abl+"/"+srx+"/SRR_Acc_List.txt", mode='wt', encoding='utf-8') as myfile:
+                myfile.write('\n'.join(srrs))            
 
 if __name__ == '__main__':
     main()
