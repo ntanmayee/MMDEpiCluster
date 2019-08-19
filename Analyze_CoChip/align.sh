@@ -31,8 +31,4 @@ cd merged
 samtools merge all.bam $(ls ../cleaned/*.bam)
 ls *.bam | parallel -j $n_threads "samtools index {}"
 cd ..
-
-makeTagDirectory ./tag_dir $(ls merged/*.bam)
-findPeaks tag_dir -style histone -o auto
-
 cd $init_wd
