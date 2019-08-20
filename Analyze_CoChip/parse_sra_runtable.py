@@ -24,7 +24,7 @@ def main():
             ab2 = re.search("("+k4me3+")|("+k27ac+")",row["chip_antibody2"]).group(0)
                         
             abl = [ab1,ab2]
-            abl.sort() 
+            #abl.sort() 
             dirname = abl[0]+"_"+abl[1]
             
             if not dirname in abdict:
