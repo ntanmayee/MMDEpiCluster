@@ -204,6 +204,6 @@ def main(args):
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     parser = argparse.ArgumentParser(prog = 'epi_cluster', description = 'Simulate Chip-Seq for correlated histone modifications')
-    parser.add_argument('params', required=True)
+    parser.add_argument('params')
     args = parser.parse_args()
     main(args)
