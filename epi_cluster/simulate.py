@@ -34,8 +34,8 @@ class Simulation(object):
         self.n_histones = params.n_histones
         self.n_modifications = params.n_modifications
         self.locations_per_pattern = params.locations_per_pattern
-        self.sampling_depth_foregroud = params.sampling_depth_foreground
-        self.sampling_depth_backgroud = params.sampling_depth_background
+        self.sampling_depth_foreground = params.sampling_depth_foreground
+        self.sampling_depth_background = params.sampling_depth_background
         self.cluster_prob = params.cluster_prob
         self.cluster_intensity_alpha = params.cluster_intensity_alpha
         self.cluster_intensity_beta = params.cluster_intensity_beta
@@ -96,7 +96,7 @@ class Simulation(object):
         logging.info('Creating random drivers...')
         nucleosome_probabilities = tfp.distributions.Beta(self.background_prior_alpha, self.background_prior_beta).sample([self.n_modifications, self.n_histones])
         nucleosome_distribution = tfp.distributions.Bernoulli(probs=nucleosome_probabilities)
-        samples = nucleosome_distribution.sample(self.sampling_depth_backgroud)
+        samples = nucleosome_distribution.sample(self.sampling_depth_background)
         return (samples, nucleosome_distribution) ###[N x self.n_modifications x self.n_histones]
 
     def generate_patterns(self):
@@ -171,9 +171,9 @@ class Simulation(object):
     def create_nucleosome_draws(self, type):
         logging.info('Creating nucleosome draws for %s' % type)
         if type == 'foreground':
-            N = self.sampling_depth_foregroud
+            N = self.sampling_depth_foreground
         elif type == 'background':
-            N = self.sampling_depth_backgroud
+            N = self.sampling_depth_background
         else:
             raise ValueError(f'Unknown read type: {type}. Should be either foreground/background')
         
