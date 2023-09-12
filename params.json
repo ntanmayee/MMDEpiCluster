@@ -1,0 +1,19 @@
+{
+   "name": "test_1",
+   "output_dir": "test_1",
+   "n_patterns": 10,
+   "n_histones": 20,
+   "n_modifications": 4,
+   "locations_per_pattern": 5,
+   "sampling_depth_foreground": 4,
+   "sampling_depth_background": 2,
+   "cluster_prob": 0.4,
+   "cluster_intensity_alpha": 3,
+   "cluster_intensity_beta": 3,
+   "histone_width": 126,
+   "histone_sigma": 10,
+   "foreground_prior_beta": 5,
+   "foreground_prior_alpha": 5,
+   "background_prior_alpha": 6,
+   "background_prior_beta": 6
+}
